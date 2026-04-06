@@ -41,8 +41,14 @@
       "password": "thanhdanh",
       "token": "tWGqloqk7Z9LaIlFDO9m",
       "id": "6"
+    },
+    {
+      "fullName": "danh",
+      "email": "danh@gmail.com",
+      "password": "danhnht",
+      "token": "ceOfAusSGUoFVzAsj4mc",
+      "id": "K4Ko2K-BAqM"
     }
   ],
-  
   "$schema": "./node_modules/json-server/schema.json"
 }

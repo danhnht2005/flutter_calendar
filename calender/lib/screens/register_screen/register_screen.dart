@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:calender/services/userServices.dart';
-import 'package:calender/helpers/token.dart';
 import 'package:go_router/go_router.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  Future<void> _handleLogin() async {
+  Future<void> _handleRegister() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
+    final fullName = _fullNameController.text.trim();
 
-    dynamic response = await login(email, password);
+    dynamic response = await register(fullName, email, password);
+    
     if (response != null && response.isNotEmpty) {
-      await Token.saveToken(response[0]['token']);
-      await Token.saveId(response[0]['id']);
-
-      context.go('/');
+      context.go('/login');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email hoặc mật khẩu không chính xác')),
+        const SnackBar(content: Text('Đăng ký thất bại, vui lòng thử lại')),
       );
     }
   }
@@ -53,23 +52,12 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 width: double.infinity,
                 child: Text(
-                  'Chào mừng bạn\nđến với flutter calender',
+                  'Đăng ký tài khoản\nflutter calender của bạn',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: double.infinity,
-                child: Text(
-                  'Đăng nhập vào tài\nkhoản calender của bạn',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -80,6 +68,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 key: _formKey,
                 child: Column(
                   children: [
+                    TextFormField(
+                      controller: _fullNameController,
+                      decoration: InputDecoration(
+                        hintText: 'Họ và tên',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Vui lòng nhập họ và tên';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 15),
                     TextFormField(
                       controller: _emailController,
                       decoration: InputDecoration(
@@ -126,7 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            _handleLogin();
+                            _handleRegister();
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -136,34 +141,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: const Text('Đăng nhập'),
+                        child: const Text('Đăng ký'),
                       ),
                     ),
-
-                    const SizedBox(height: 10),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('Chưa có tài khoản?'),
-                        TextButton(
-                          onPressed: () => context.go('/register'),
-                          child: const Text('Đăng ký'),
-                        ),
-                      ],
-                    ),
                   ],
-                ),
+                ),  
               ),
 
               const Spacer(),
 
-              const Text(
-                'Bằng việc tiếp tục, bạn xác nhận rằng bạn hiểu và đồng ý với Điều khoản và chính sách quyền riêng tư',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-              const SizedBox(height: 20),
               const Text(
                 '© 2026 calender, danhnht2005',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
