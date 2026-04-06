@@ -6,7 +6,7 @@ class ApiService {
 
   static Future<dynamic> get(String path) async {
     final response = await http.get(Uri.parse(apiDomain + path));
-    return response;
+    return _handleResponse(response);
   }
 
   static Future<dynamic> post(String path, Map<String, dynamic> body) async {
@@ -18,12 +18,12 @@ class ApiService {
       },
       body: jsonEncode(body),
     );
-    return response;
+    return _handleResponse(response);
   }
 
   static Future<dynamic> del(String path) async {
     final response = await http.delete(Uri.parse(apiDomain + path));
-    return response;
+    return _handleResponse(response);
   }
 
   static Future<dynamic> patch(String path, Map<String, dynamic> body) async {
@@ -35,6 +35,14 @@ class ApiService {
       },
       body: jsonEncode(body),
     );
-    return response;
+    return _handleResponse(response);
+  }
+
+  static dynamic _handleResponse(http.Response response) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Lỗi kết nối: ${response.statusCode}");
+    }
   }
 }
