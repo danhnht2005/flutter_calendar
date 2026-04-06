@@ -1,0 +1,48 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "fullName": "Nguyen Thi A",
+      "email": "nguyenthia@gmail.com",
+      "password": "nguyenthia",
+      "token": "vX4jM9RtLp2QwK7nYc5B"
+    },
+    {
+      "id": "2",
+      "fullName": "Do Thi B",
+      "email": "dothib@gmail.com",
+      "password": "dothib",
+      "token": "zF8sW3bV1xN6gD0eM5pJ"
+    },
+    {
+      "id": "3",
+      "fullName": "Ngo Van C",
+      "email": "ngovanc@gmail.com",
+      "password": "ngovanc",
+      "token": "pY2vH5kQ8cT9mR3LqF7b"
+    },
+    {
+      "id": "4",
+      "fullName": "Le Van D",
+      "email": "levand@gmail.com",
+      "password": "levand",
+      "token": "dM6gJ5pNeD8sZ1xV4bW0"
+    },
+    {
+      "id": "5",
+      "fullName": "Nguyen Thi E",
+      "email": "nguyenthie@gmail.com",
+      "password": "nguyenthie",
+      "token": "hR5tP2vLqY9kQ3cN8aX7"
+    },
+    {
+      "fullName": "Nguyễn Huỳnh Thành Danh",
+      "email": "thanhdanh130425@gmail.com",
+      "password": "thanhdanh",
+      "token": "tWGqloqk7Z9LaIlFDO9m",
+      "id": "6"
+    }
+  ],
+  
+  "$schema": "./node_modules/json-server/schema.json"
+}
