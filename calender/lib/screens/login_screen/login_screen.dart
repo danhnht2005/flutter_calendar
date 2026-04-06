@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
     dynamic response = await login(email, password);
     if (response != null && response.isNotEmpty) {
       await Token.saveToken(response[0]['token']);
-      await Token.saveId(response[0]['id']);
+      await Token.saveId(response[0]['id'].toString());
 
       context.go('/');
     } else {

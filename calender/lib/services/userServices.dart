@@ -8,6 +8,11 @@ Future<dynamic> login(String email, String password) async {
   return result;
 }
 
+Future<dynamic> getUser(String id) async {
+  final result = await ApiService.get('users/$id');
+  return result;
+}
+
 Future<dynamic> register(String fullName, String email, String password) async {
   final result = await ApiService.post('users', {
     'fullName': fullName,
