@@ -15,13 +15,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  @override
+  void dispose() {
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   Future<void> _handleRegister() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
     final fullName = _fullNameController.text.trim();
 
     dynamic response = await register(fullName, email, password);
-    
+
+    if (!mounted) return;
+
     if (response != null && response.isNotEmpty) {
       context.go('/login');
     } else {
@@ -158,7 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ],
                     ),
                   ],
-                ),  
+                ),
               ),
 
               const Spacer(),

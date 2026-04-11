@@ -9,6 +9,7 @@ class AppTheme {
     final ColorScheme colorScheme = ColorScheme.fromSeed(
       seedColor: _seedColor,
       brightness: Brightness.light,
+      primary: Colors.grey,
     );
 
     return ThemeData(
@@ -16,7 +17,6 @@ class AppTheme {
       colorScheme: colorScheme,
       scaffoldBackgroundColor: const Color(0xFFFFFFFF),
       appBarTheme: const AppBarTheme(
-        centerTitle: true,
         backgroundColor: Color(0xFFF8F8F8),
         surfaceTintColor: Colors.transparent,
         elevation: 0, 

@@ -6,14 +6,16 @@ import 'package:calender/services/color_service.dart';
 import 'package:calender/widget/drag_handle/drag_handle.dart';
 import 'package:flutter/material.dart';
 
-class AddCategoryScreen extends StatefulWidget {
-  const AddCategoryScreen({super.key});
+class DetailCategoryScreen extends StatefulWidget {
+  final String id;
+
+  const DetailCategoryScreen({super.key, required this.id});
 
   @override
-  State<AddCategoryScreen> createState() => _AddCategoryScreenState();
+  State<DetailCategoryScreen> createState() => _DetailCategoryScreenState();
 }
 
-class _AddCategoryScreenState extends State<AddCategoryScreen> {
+class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   String _selectedColor = "B8B8B8";
@@ -80,7 +82,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const DragHandle(),
-
+          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
