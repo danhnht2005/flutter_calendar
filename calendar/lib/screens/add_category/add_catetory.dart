@@ -3,6 +3,7 @@ import 'package:calender/helpers/token.dart';
 import 'package:calender/models/color_category.dart';
 import 'package:calender/services/categori_service.dart';
 import 'package:calender/services/color_service.dart';
+import 'package:calender/widget/drag_handle/drag_handle.dart';
 import 'package:flutter/material.dart';
 
 class AddCategoryScreen extends StatefulWidget {
@@ -56,6 +57,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       color,
     );
 
+    if (!mounted) return;
+
     if (response != null) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(
@@ -76,17 +79,8 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: 16), // Tạo khoảng cách với hàng bên dưới
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300, // Màu xám nhạt giống ảnh
-                borderRadius: BorderRadius.circular(2), // Bo góc tròn
-              ),
-            ),
-          ),
+          const DragHandle(),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

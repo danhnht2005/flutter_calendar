@@ -24,8 +24,11 @@ class _LoginScreenState extends State<LoginScreen> {
       await Token.saveToken(response[0]['token']);
       await Token.saveId(response[0]['id'].toString());
 
+      if (!mounted) return;
+
       context.go('/');
     } else {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Email hoặc mật khẩu không chính xác')),
       );

@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(title: const Text('Home Screen')),
       drawer: const AppDrawer(),
       body: SfCalendar(
-        view: CalendarView.workWeek,
+        view: CalendarView.day,
         headerHeight: 0,
         todayHighlightColor: Color(0xFFF04842),
         viewHeaderStyle: ViewHeaderStyle(

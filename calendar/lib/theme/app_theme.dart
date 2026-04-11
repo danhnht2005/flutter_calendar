@@ -9,6 +9,7 @@ class AppTheme {
     final ColorScheme colorScheme = ColorScheme.fromSeed(
       seedColor: _seedColor,
       brightness: Brightness.light,
+      primary: Colors.grey,
     );
 
     return ThemeData(
