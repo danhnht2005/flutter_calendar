@@ -17,12 +17,17 @@ class DetailCategoryScreen extends StatefulWidget {
 }
 
 class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  Categories categories = Categories();
+
   String _selectedColor = "B8B8B8";
 
+  bool _isFormValid = false;
+  String? _defaultNameCategory;
+
   List<ColorCategory> colorOptions = [];
+  Categories categories = Categories();
 
   @override
   void initState() {
@@ -44,6 +49,7 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
       setState(() {
         categories = Categories.fromJson(response);
         _nameController.text = categories.name ?? '';
+        _defaultNameCategory = categories.name ?? '';
         _descriptionController.text = categories.description ?? '';
         _selectedColor = categories.color ?? "B8B8B8";
       });
@@ -108,7 +114,7 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 8, 16.0, 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -147,54 +153,83 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
                 ],
               ),
 
-              TextButton(
-                onPressed: () {
-                  handleEditCategory();
-                  Navigator.pop(context);
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: const Color(0xFFE5E5E5),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 4,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  'Hoàn tất',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
+              (_isFormValid
+                  ? TextButton(
+                      onPressed: () {
+                        handleEditCategory();
+                        Navigator.pop(context);
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundColor: const Color(0xFFE5E5E5),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 4,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text(
+                        'Hoàn tất',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    )
+                  : IconButton(
+                      onPressed: () => {Navigator.pop(context)},
+                      icon: const Icon(
+                        Icons.close,
+                        color: Colors.black,
+                        size: 20,
+                      ),
+                      style: IconButton.styleFrom(
+                        backgroundColor: const Color(0xFFE5E5E5),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 4,
+                        ),
+                      ),
+                    )),
             ],
           ),
 
           const SizedBox(height: 14),
 
-          TextField(
-            controller: _nameController,
-             style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black, 
-            ),
-            decoration: InputDecoration(
-              hintText: 'Tiêu đề',
-              hintStyle: const TextStyle(
+          Form(
+            key: _formKey,
+            child: TextField(
+              controller: _nameController,
+              onChanged: (value) {
+                setState(() {
+                  _isFormValid = _defaultNameCategory != value.trim() && value.trim().isNotEmpty;
+                });
+              },
+              style: const TextStyle(
                 fontSize: 20,
-                color: Colors.grey,
                 fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+              decoration: InputDecoration(
+                hintText: 'Tiêu đề',
+                hintStyle: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 8,
+                ),
+              ),
             ),
           ),
 

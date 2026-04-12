@@ -15,9 +15,12 @@ class AddCategoryScreen extends StatefulWidget {
 }
 
 class _AddCategoryScreenState extends State<AddCategoryScreen> {
+  final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   String _selectedColor = "B8B8B8";
+
+  bool _isFormValid = false;
 
   List<ColorCategory> colorOptions = [];
 
@@ -77,72 +80,90 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 8, 16.0, 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const DragHandle(),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Thêm danh mục',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-
-              TextButton(
-                onPressed: () {
-                  handleAddCategory();
-                  Navigator.pop(context);
-                },
-                style: TextButton.styleFrom(
-                  backgroundColor: const Color(0xFFE5E5E5),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 4,
+          Align(
+            alignment: Alignment.topRight,
+            child: _isFormValid
+                ? TextButton(
+                    onPressed: () {
+                      handleAddCategory();
+                      Navigator.pop(context);
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: const Color(0xFFE5E5E5),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 4,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'Hoàn tất',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  )
+                : IconButton(
+                    onPressed: () => {Navigator.pop(context)},
+                    icon: const Icon(
+                      Icons.close,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    style: IconButton.styleFrom(
+                      backgroundColor: const Color(0xFFE5E5E5),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4,
+                        vertical: 4,
+                      ),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  'Hoàn tất',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ],
           ),
 
           const SizedBox(height: 14),
 
-          TextField(
-            controller: _nameController,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black, 
-            ),
-            decoration: InputDecoration(
-              hintText: 'Tiêu đề',
-              hintStyle: const TextStyle(
+          Form(
+            key: _formKey,
+            child: TextFormField(
+              controller: _nameController,
+              onChanged: (value) {
+                setState(() {
+                  _isFormValid = value.trim().isNotEmpty;
+                });
+              },
+              style: const TextStyle(
                 fontSize: 20,
-                color: Colors.grey,
                 fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
-              enabledBorder: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+              decoration: InputDecoration(
+                hintText: 'Tiêu đề',
+                hintStyle: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 4,
+                  vertical: 8,
+                ),
+              ),
             ),
           ),
 
@@ -150,7 +171,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
           const Divider(height: 1, color: Colors.black12),
           const SizedBox(height: 16),
 
-          TextField(
+          TextFormField(
             controller: _descriptionController,
             decoration: InputDecoration(
               hintText: 'Mô tả',
