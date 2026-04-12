@@ -72,7 +72,6 @@ class _ProfileHeaderState extends State<ProfileHeader> {
             color: Colors.grey.shade600,
             iconSize: 16,
             onPressed: () {
-              Navigator.pop(context);
               context.go('/settings');
             },
           ),

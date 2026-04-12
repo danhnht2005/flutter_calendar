@@ -26,8 +26,8 @@ class ApiService {
     return _handleResponse(response);
   }
 
-  static Future<dynamic> patch(String path, Map<String, dynamic> body) async {
-    final response = await http.patch(
+  static Future<dynamic> put(String path, Map<String, dynamic> body) async {
+    final response = await http.put(
       Uri.parse(apiDomain + path),
       headers: {
         "Accept": "application/json",

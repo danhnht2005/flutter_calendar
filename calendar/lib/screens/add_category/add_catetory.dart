@@ -5,6 +5,7 @@ import 'package:calender/services/categori_service.dart';
 import 'package:calender/services/color_service.dart';
 import 'package:calender/widget/drag_handle/drag_handle.dart';
 import 'package:flutter/material.dart';
+import 'package:elegant_notification/elegant_notification.dart';
 
 class AddCategoryScreen extends StatefulWidget {
   const AddCategoryScreen({super.key});
@@ -60,15 +61,16 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
     if (!mounted) return;
 
     if (response != null) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Thêm danh mục thành công')));
+      ElegantNotification.success(
+        title: Text("Thêm danh mục thành công"),
+        description: Text("Danh mục của bạn đã được tạo thành công"),
+      ).show(context);
     } else {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Thêm danh mục thất bại')));
+      ElegantNotification.error(
+        title: Text("Thêm danh mục thất bại"),
+        description: Text("Đã xảy ra lỗi khi thêm danh mục"),
+      ).show(context);
     }
   }
 
@@ -94,31 +96,31 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
               ),
 
               TextButton(
-              onPressed: () {
-                handleAddCategory();
-                Navigator.pop(context);
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: const Color(0xFFE5E5E5),
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
+                onPressed: () {
+                  handleAddCategory();
+                  Navigator.pop(context);
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xFFE5E5E5),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                child: const Text(
+                  'Hoàn tất',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-              child: const Text(
-                'Hoàn tất',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
             ],
           ),
 
@@ -126,6 +128,11 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
 
           TextField(
             controller: _nameController,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black, 
+            ),
             decoration: InputDecoration(
               hintText: 'Tiêu đề',
               hintStyle: const TextStyle(
@@ -147,10 +154,7 @@ class _AddCategoryScreenState extends State<AddCategoryScreen> {
             controller: _descriptionController,
             decoration: InputDecoration(
               hintText: 'Mô tả',
-              hintStyle: const TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
+              hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
               enabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),

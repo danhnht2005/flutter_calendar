@@ -38,6 +38,7 @@ dependencies:
   go_router: ^17.2.0
   shared_preferences: ^2.5.5
   syncfusion_flutter_calendar: ^33.1.46
+  elegant_notification: ^2.5.1
 
 dev_dependencies:
   flutter_test:

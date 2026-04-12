@@ -1,10 +1,11 @@
 import 'package:calender/helpers/get_color.dart';
-import 'package:calender/helpers/token.dart';
+import 'package:calender/models/categories.dart';
 import 'package:calender/models/color_category.dart';
 import 'package:calender/services/categori_service.dart';
 import 'package:calender/services/color_service.dart';
 import 'package:calender/widget/drag_handle/drag_handle.dart';
 import 'package:flutter/material.dart';
+import 'package:elegant_notification/elegant_notification.dart';
 
 class DetailCategoryScreen extends StatefulWidget {
   final String id;
@@ -18,6 +19,7 @@ class DetailCategoryScreen extends StatefulWidget {
 class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  Categories categories = Categories();
   String _selectedColor = "B8B8B8";
 
   List<ColorCategory> colorOptions = [];
@@ -26,6 +28,7 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
   void initState() {
     super.initState();
     _fetchColors();
+    _fetchCategory();
   }
 
   @override
@@ -33,6 +36,18 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
     _nameController.dispose();
     _descriptionController.dispose();
     super.dispose();
+  }
+
+  Future<void> _fetchCategory() async {
+    final dynamic response = await getCategory(widget.id);
+    if (response != null) {
+      setState(() {
+        categories = Categories.fromJson(response);
+        _nameController.text = categories.name ?? '';
+        _descriptionController.text = categories.description ?? '';
+        _selectedColor = categories.color ?? "B8B8B8";
+      });
+    }
   }
 
   Future<void> _fetchColors() async {
@@ -44,33 +59,49 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
     }
   }
 
-  Future<void> handleAddCategory() async {
-    final String name = _nameController.text.trim();
-    final String description = _descriptionController.text.trim();
-    final String color = _selectedColor;
+  Future<void> handleDeleteCategory() async {
+    dynamic response = await deleteCategory(widget.id);
 
-    final String? id = await Token.getId();
-    if (id == null) return;
+    if (!mounted) return;
 
-    dynamic response = await createCategory(
-      int.parse(id),
-      name,
-      description,
-      color,
+    if (response != null) {
+      if (!context.mounted) return;
+      ElegantNotification.success(
+        title: Text("Xóa danh mục thành công"),
+        description: Text("Danh mục của bạn đã được xóa thành công"),
+      ).show(context);
+    } else {
+      if (!context.mounted) return;
+      ElegantNotification.error(
+        title: Text("Xóa danh mục thất bại"),
+        description: Text("Đã xảy ra lỗi khi xóa danh mục"),
+      ).show(context);
+    }
+  }
+
+  Future<void> handleEditCategory() async {
+    dynamic response = await editCategory(
+      widget.id,
+      int.parse(categories.userId ?? '0'),
+      _nameController.text,
+      _descriptionController.text,
+      _selectedColor,
     );
 
     if (!mounted) return;
 
     if (response != null) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Thêm danh mục thành công')));
+      ElegantNotification.success(
+        title: Text("Sửa danh mục thành công"),
+        description: Text("Danh mục của bạn đã được sửa thành công"),
+      ).show(context);
     } else {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Thêm danh mục thất bại')));
+      ElegantNotification.error(
+        title: Text("Sửa danh mục thất bại"),
+        description: Text("Đã xảy ra lỗi khi sửa danh mục"),
+      ).show(context);
     }
   }
 
@@ -82,45 +113,66 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const DragHandle(),
-          
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Thêm danh mục',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.more_horiz),
+                color: Colors.black,
+                surfaceTintColor: Colors.transparent,
+                onSelected: (String value) {
+                  if (value == 'edit-active') {
+                    print('Thực hiện chức năng Sửa');
+                  } else if (value == 'delete') {
+                    handleDeleteCategory();
+                    Navigator.pop(context);
+                  }
+                },
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  const PopupMenuItem<String>(
+                    value: 'edit-active',
+                    child: Text(
+                      'Chặn trên lịch',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'delete',
+                    child: Text(
+                      'Xóa danh mục',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ),
+                ],
               ),
 
               TextButton(
-              onPressed: () {
-                handleAddCategory();
-                Navigator.pop(context);
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: const Color(0xFFE5E5E5),
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
+                onPressed: () {
+                  handleEditCategory();
+                  Navigator.pop(context);
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xFFE5E5E5),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                child: const Text(
+                  'Hoàn tất',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-              child: const Text(
-                'Hoàn tất',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
             ],
           ),
 
@@ -128,6 +180,11 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
 
           TextField(
             controller: _nameController,
+             style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black, 
+            ),
             decoration: InputDecoration(
               hintText: 'Tiêu đề',
               hintStyle: const TextStyle(
@@ -149,10 +206,7 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
             controller: _descriptionController,
             decoration: InputDecoration(
               hintText: 'Mô tả',
-              hintStyle: const TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
+              hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
               enabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,
               contentPadding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),

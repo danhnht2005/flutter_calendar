@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:calender/services/user_services.dart';
 import 'package:calender/helpers/token.dart';
 import 'package:go_router/go_router.dart';
+import 'package:elegant_notification/elegant_notification.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -29,9 +30,10 @@ class _LoginScreenState extends State<LoginScreen> {
       context.go('/');
     } else {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email hoặc mật khẩu không chính xác')),
-      );
+      ElegantNotification.error(
+        title: Text("Đăng nhập thất bại"),
+        description: Text("Email hoặc mật khẩu không chính xác"),
+      ).show(context);
     }
   }
 
@@ -56,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 width: double.infinity,
                 child: Text(
-                  'Chào mừng bạn\nđến với flutter calender',
+                  'Chào mừng bạn\nđến với flutter calendar',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: 24,
@@ -68,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(
                 width: double.infinity,
                 child: Text(
-                  'Đăng nhập vào tài\nkhoản calender của bạn',
+                  'Đăng nhập vào tài\nkhoản calendar của bạn',
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 25,
@@ -168,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 20),
               const Text(
-                '© 2026 calender',
+                '© 2026 calendar',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
               const SizedBox(height: 20),

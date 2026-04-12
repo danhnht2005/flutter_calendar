@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:calender/services/user_services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:elegant_notification/elegant_notification.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -30,14 +31,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     dynamic response = await register(fullName, email, password);
 
+
     if (!mounted) return;
 
     if (response != null && response.isNotEmpty) {
       context.go('/login');
+      ElegantNotification.success(
+        title: Text("Đăng ký thành công"),
+        description: Text("Tài khoản của bạn đã được tạo thành công"),
+      ).show(context);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Đăng ký thất bại, vui lòng thử lại')),
-      );
+      ElegantNotification.error(
+        title: Text("Đăng ký thất bại"),
+        description: Text("Đã xảy ra lỗi trong quá trình đăng ký, vui lòng thử lại"),
+      ).show(context);
     }
   }
 
@@ -62,7 +69,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(
                 width: double.infinity,
                 child: Text(
-                  'Đăng ký tài khoản\nflutter calender của bạn',
+                  'Đăng ký tài khoản\nflutter calendar của bạn',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: 24,
@@ -72,7 +79,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
 
-              const SizedBox(height: 40),
+              const SizedBox(
+                width: double.infinity,
+                child: Text(
+                  'Tạo Tài Khoản\ncalendar của bạn',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
 
               Form(
                 key: _formKey,
@@ -174,7 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const Spacer(),
 
               const Text(
-                '© 2026 calender',
+                '© 2026 calendar',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
               const SizedBox(height: 20),
