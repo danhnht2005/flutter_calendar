@@ -180,6 +180,11 @@ class _DetailCategoryScreenState extends State<DetailCategoryScreen> {
 
           TextField(
             controller: _nameController,
+             style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black, 
+            ),
             decoration: InputDecoration(
               hintText: 'Tiêu đề',
               hintStyle: const TextStyle(
