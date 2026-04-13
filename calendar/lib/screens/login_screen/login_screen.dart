@@ -47,10 +47,11 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             children: [
               const SizedBox(height: 40),
-              const Icon(
-                Icons.calendar_today_rounded,
-                size: 80,
-                color: Colors.black,
+              Image.asset(
+                'lib/assets/images/logo.png',
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
               ),
 
               const SizedBox(height: 30),

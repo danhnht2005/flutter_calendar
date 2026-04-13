@@ -58,10 +58,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             children: [
               const SizedBox(height: 40),
-              const Icon(
-                Icons.calendar_today_rounded,
-                size: 80,
-                color: Colors.black,
+              Image.asset(
+                'lib/assets/images/logo.png',
+                width: 80,
+                height: 80,
+                fit: BoxFit.cover,
               ),
 
               const SizedBox(height: 30),
@@ -69,7 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(
                 width: double.infinity,
                 child: Text(
-                  'Đăng ký tài khoản\nflutter calendar của bạn',
+                  'Calendar - không gian\nLàm việc của bạn',
                   textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: 24,
@@ -82,7 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(
                 width: double.infinity,
                 child: Text(
-                  'Tạo Tài Khoản\ncalendar của bạn',
+                  'Đăng ký bằng email\ncông việc của bạn',
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 25,
@@ -191,6 +192,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
 
               const Spacer(),
+
+              const Text(
+                'Bằng việc tiếp tục, bạn xác nhận rằng bạn hiểu và đồng ý với Điều khoản và chính sách quyền riêng tư',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+
+              const SizedBox(height: 20),
 
               const Text(
                 '© 2026 calendar',
