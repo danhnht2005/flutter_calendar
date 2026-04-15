@@ -6,6 +6,10 @@ import 'package:calender/screens/register_screen/register_screen.dart';
 import 'package:calender/helpers/token.dart';
 import 'package:calender/screens/settings_screen/settings_screen.dart';
 import 'package:calender/screens/detail_category/detail_category.dart';
+import 'package:calender/screens/notification_screen/notification_screen.dart';
+import 'package:calender/screens/notification_settings_screen/notification_settings_screen.dart';
+import 'package:calender/screens/statistics_screen/statistics_screen.dart';
+import 'package:calender/screens/statistics_detail_screen/statistics_detail_screen.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/',
@@ -38,11 +42,29 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const SettingsScreen(),
     ),
     GoRoute(
-      path: '/details-category/:id', // Khai báo param 'id'
+      path: '/details-category/:id',
       builder: (context, state) {
-        // Lấy tham số xuống bằng state.pathParameters
         final String? id = state.pathParameters['id'];
         return DetailCategoryScreen(id: id ?? '');
+      },
+    ),
+    GoRoute(
+      path: '/notifications',
+      builder: (context, state) => const NotificationScreen(),
+    ),
+    GoRoute(
+      path: '/notification-settings',
+      builder: (context, state) => const NotificationSettingsScreen(),
+    ),
+    GoRoute(
+      path: '/statistics',
+      builder: (context, state) => const StatisticsScreen(),
+    ),
+    GoRoute(
+      path: '/statistics-detail/:filter',
+      builder: (context, state) {
+        final filter = state.pathParameters['filter'] ?? 'all';
+        return StatisticsDetailScreen(filter: filter);
       },
     ),
   ],

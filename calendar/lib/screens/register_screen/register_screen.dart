@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:calender/services/user_services.dart';
-import 'package:go_router/go_router.dart';
+import 'package:calender/services/user_db_service.dart';
 import 'package:elegant_notification/elegant_notification.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -15,6 +15,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -25,26 +26,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _handleRegister() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-    final fullName = _fullNameController.text.trim();
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _isLoading = true);
 
-    dynamic response = await register(fullName, email, password);
+    try {
+      final user = await UserDbService.register(
+        _fullNameController.text.trim(),
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
 
+      if (!mounted) return;
 
-    if (!mounted) return;
-
-    if (response != null && response.isNotEmpty) {
-      context.go('/login');
-      ElegantNotification.success(
-        title: Text("Đăng ký thành công"),
-        description: Text("Tài khoản của bạn đã được tạo thành công"),
-      ).show(context);
-    } else {
+      if (user != null) {
+        ElegantNotification.success(
+          title: const Text('Đăng ký thành công'),
+          description: const Text('Tài khoản của bạn đã được tạo thành công'),
+        ).show(context);
+        context.go('/login');
+      } else {
+        ElegantNotification.error(
+          title: const Text('Email đã tồn tại'),
+          description: const Text('Vui lòng sử dụng email khác'),
+        ).show(context);
+      }
+    } catch (_) {
+      if (!mounted) return;
       ElegantNotification.error(
-        title: Text("Đăng ký thất bại"),
-        description: Text("Đã xảy ra lỗi trong quá trình đăng ký, vui lòng thử lại"),
+        title: const Text('Đã xảy ra lỗi'),
+        description: const Text('Vui lòng thử lại'),
       ).show(context);
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -58,15 +71,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             children: [
               const SizedBox(height: 40),
-              Image.asset(
-                'lib/assets/images/logo.png',
-                width: 80,
-                height: 80,
-                fit: BoxFit.cover,
+              const Icon(
+                Icons.calendar_today_rounded,
+                size: 80,
+                color: Colors.black,
               ),
-
               const SizedBox(height: 30),
-
               const SizedBox(
                 width: double.infinity,
                 child: Text(
@@ -79,7 +89,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(
                 width: double.infinity,
                 child: Text(
@@ -91,9 +100,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 20),
-
               Form(
                 key: _formKey,
                 child: Column(
@@ -106,36 +113,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Vui lòng nhập họ và tên';
-                        }
+                      validator: (v) {
+                        if (v == null || v.isEmpty) return 'Vui lòng nhập họ và tên';
                         return null;
                       },
                     ),
-
                     const SizedBox(height: 15),
                     TextFormField(
                       controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         hintText: 'Email của bạn',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Vui lòng nhập email';
-                        }
-                        if (!value.contains('@')) {
-                          return 'Email không hợp lệ';
-                        }
+                      validator: (v) {
+                        if (v == null || v.isEmpty) return 'Vui lòng nhập email';
+                        if (!v.contains('@')) return 'Email không hợp lệ';
                         return null;
                       },
                     ),
-
                     const SizedBox(height: 15),
-
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
@@ -145,25 +144,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      validator: (value) {
-                        if (value == null || value.length < 6) {
+                      validator: (v) {
+                        if (v == null || v.length < 6) {
                           return 'Mật khẩu phải ít nhất 6 ký tự';
                         }
                         return null;
                       },
                     ),
-
                     const SizedBox(height: 25),
-
                     SizedBox(
                       width: double.infinity,
                       height: 50,
                       child: ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            _handleRegister();
-                          }
-                        },
+                        onPressed: _isLoading ? null : _handleRegister,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
                           foregroundColor: Colors.white,
@@ -171,12 +164,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: const Text('Đăng ký'),
+                        child: _isLoading
+                            ? const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text('Đăng ký'),
                       ),
                     ),
-
                     const SizedBox(height: 10),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -190,17 +190,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ],
                 ),
               ),
-
               const Spacer(),
-
               const Text(
                 'Bằng việc tiếp tục, bạn xác nhận rằng bạn hiểu và đồng ý với Điều khoản và chính sách quyền riêng tư',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
-
               const SizedBox(height: 20),
-
               const Text(
                 '© 2026 calendar',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
